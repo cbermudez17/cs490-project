@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>CS490 - Login Page</title>
+    <script>
+        // Prevents login if already logged in previously in session
+        if (sessionStorage.username) {
+            window.location.href = sessionStorage.role + '/exams';
+        }
+    </script>
+    <style>        
+        form {
+            background-color: white;
+            padding: 30px 10px;
+            border-radius: 15px;
+            border: #dce0e0 1px solid;
+            max-width: 400px;
+            margin: auto;
+        }
+        
+        input {
+            font-size: 18px;
+            border-radius: 10px;
+        }
+        
+        h4 {
+            margin: 0 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text-center">
+        <h1>Online Exam System</h1>
+        <form class="shadow"><br />
+            <h4>Secure Login</h4>
+            <span class="error-text" id="error-msg"></span>
+            <br />
+            <input type="text" name="username" placeholder="Username" required />
+            <br /><br />
+            <input type="password" name="password" placeholder="Password" required />
+            <br /><br />
+            <div class="text-center">
+                <button class="button primary-btn" type="button" onclick="submitForm()">Login</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const submitForm = () => {
+            var formData = new FormData(document.getElementsByTagName("form")[0]);
+            formData.append("action", "authenticate");
+            fetch("https://web.njit.edu/~jdg37/cs490/frontback.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status == 'success') {
+                    sessionStorage.username = data.username;
+                    sessionStorage.role = data.role;
+                    window.location.href = data.role + '/exams';
+                } else {
+                    document.getElementById("error-msg").innerHTML = data.message;
+                    document.getElementById("error-msg").style.display = "block";
+                    document.getElementsByTagName("form")[0].reset();
+                }
+            });
+            return false;
+        };
+        // Handler to have the Enter key login
+        document.querySelectorAll("input").forEach(input => input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementsByTagName("button")[0].click();
+            }
+        }));
+    </script>
+</body>
+
+</html>
