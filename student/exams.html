@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <title>Exams</title>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li class="active"><a href="exams">exams</a></li>
+            <li><a href="#" onclick="logout()">logout</a></li>
+            <script>
+                function logout() {
+                    sessionStorage.clear();
+                    window.location.href = '../login';
+                }
+            </script>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div class="container col-8 col-offset-2">
+            <div class="row text-center">
+                <h2 style="margin-top:0">Exams</h2>
+            </div>
+            <table class="col-12 shadow">
+                <thead class="text-center">
+                    <tr>
+                        <th>Name</th>
+                        <th class="text-right">Grade</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="exams" class="text-right"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        if (!sessionStorage.username) {
+            window.location.href = '../login';
+        } else if (sessionStorage.role == 'teacher') {
+            window.location.href = '../teacher/exams';
+        }
+        const proxyUrl = "https://web.njit.edu/~jdg37/cs490/frontback.php";
+
+        function getExams() {
+            var formData = new FormData();
+            formData.append("action", "getStudentExams");
+            formData.append("username", sessionStorage.username);
+            fetch(proxyUrl, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => displayExamsInTable(data.exams));
+        }
+
+        function displayExamsInTable(exams) {
+            var table = document.getElementById("exams");
+            exams.forEach(exam => {
+                var row = table.insertRow(-1);
+                var name = row.insertCell(0);
+                name.innerHTML = exam.name;
+                name.className = 'text-center';
+                row.insertCell(1).innerHTML = exam.grade;
+                row.insertCell(2).innerHTML = exam.released == 1 ? '<button onclick="reviewGrade('+exam.id+',\''+exam.name+'\')">Review Grade</button>' : exam.completed ? '<button class="disabled-btn">Pending Grade</button>' : '<button onclick="takeExam('+exam.id+',\''+exam.name+'\')">Take Exam</button>';
+            });
+        }
+
+        function reviewGrade(id, name) {
+            sessionStorage.reqExamId = id;
+            sessionStorage.reqExamName = name;
+            window.location.href = 'review-grade';
+        }
+
+        function takeExam(id, name) {
+            sessionStorage.reqExamId = id;
+            sessionStorage.reqExamName = name;
+            window.location.href = 'take-exam';
+        }
+
+        document.addEventListener("DOMContentLoaded", getExams());
+    </script>
+    
+</body>
+</html>
