@@ -1,0 +1,299 @@
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+}
+
+body { 
+  background-color: #f3f7f7;
+  color: #39424e;
+  font-family: 'Open Sans';
+  padding-top: 100px;
+}
+
+nav {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+  top: -10px;
+  width: 100%;
+  background-color: #39424e;
+  font-weight: bold;
+}
+
+nav li {
+  float: left;
+  font-weight: bold;
+  font-variant: small-caps;
+  list-style-type: none;
+}
+
+nav li a {
+  display: block;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: #b0c9cc;
+}
+
+nav li a:hover {
+  color: white;
+}
+
+nav li.active a {
+  border-bottom: 5px solid #1ba94c;
+  color: white;
+}
+
+.content {
+  padding: 15px;
+}
+
+.container {
+  padding: 10px;
+}
+
+.error-text {
+  display: none;
+  color: red;
+  margin-top: 15px;
+}
+
+button, .button {
+  background-color: #f0f0f4;
+  border: 1px #d8dbe2 solid;
+  border-radius: 3px;
+  padding: 8px 18px;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background-color: #2ec866;
+  color: white;
+}
+
+button:hover, .button:hover {
+  background-color: #1ba94c;
+  color: white;
+}
+
+.disabled-btn {
+  cursor: default;
+}
+
+.disabled-btn:hover {
+  background-color: #f0f0f4;
+  color: inherit;
+}
+
+.sm-btn {
+  font-size: 12px;
+  padding: 6px 14px;
+}
+
+.lg-btn {
+  font-size: 16px;
+  padding: 10px 24px;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+table {
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 16px;
+  line-height: 1.4em;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+table thead th {
+  padding: 15px;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd
+}
+
+table tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+input[type=radio], input[type=checkbox] {
+  margin-right: 5px;
+}
+
+#q-constraint > input:not(:first-child) {
+  margin-left: 15px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 5px 10px;
+  display: inline-block;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.col-1 {
+  float: left;
+  width: 8.33%;
+  margin-top: 6px;
+}
+
+.col-2 {
+  float: left;
+  width: 16.66%;
+  margin-top: 6px;
+}
+
+.col-3 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-4 {
+  float: left;
+  width: 33.33%;
+  margin-top: 6px;
+}
+
+.col-5 {
+  float: left;
+  width: 41.66%;
+  margin-top: 6px;
+}
+
+.col-6 {
+  float: left;
+  width: 50%;
+  margin-top: 6px;
+}
+
+.col-7 {
+  float: left;
+  width: 58.33%;
+  margin-top: 6px;
+}
+
+.col-8 {
+  float: left;
+  width: 66.66%;
+  margin-top: 6px;
+}
+
+.col-9 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+.col-10 {
+  float: left;
+  width: 83.33%;
+  margin-top: 6px;
+}
+
+.col-11 {
+  float: left;
+  width: 91.66%;
+  margin-top: 6px;
+}
+
+.col-12 {
+  float: left;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.col-offset-1 {
+  margin-left: 8.33%;
+}
+
+.col-offset-2 {
+  margin-left: 16.66%;
+}
+
+.col-offset-3 {
+  margin-left: 25%;
+}
+
+.col-offset-4 {
+  margin-left: 33.33%;
+}
+
+.col-offset-5 {
+  margin-left: 41.66%;
+}
+
+.col-offset-6 {
+  margin-left: 50%;
+}
+
+.col-offset-7 {
+  margin-left: 58.33%;
+}
+
+.col-offset-8 {
+  margin-left: 66.66%;
+}
+
+.col-offset-9 {
+  margin-left: 75%;
+}
+
+.col-offset-10 {
+  margin-left: 83.33%;
+}
+
+.col-offset-11 {
+  margin-left: 91.66%;
+}
+
+.col-offset-12 {
+  margin-left: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.data {
+  white-space: pre-wrap;
+}
+
+.form-row:after, .row:after, .content:after, .clearfix {
+  content: "";
+  display: table;
+  clear: both;
+}
