@@ -65,13 +65,12 @@ function submitAnswers($conn) {
         $r = curl_exec($ch);
         curl_close($ch);
         
-        echo $r;
-        // $graderResult = json_decode($r, true);
+        $graderResult = json_decode($r, true);
 
-        // $stmt = $conn->prepare("INSERT INTO response(examId, questionId, username, answer, grade, comments) VALUES (?,?,?,?,?,?)");
-        // $stmt->bind_param("iissis", $_POST["id"], $response["questionId"], $_POST["username"], $response["answer"], $graderResult["grade"], $graderResult["comments"]);
-        // $stmt->execute();
-        // $stmt->close();
+        $stmt = $conn->prepare("INSERT INTO response(examId, questionId, username, answer, grade, comments) VALUES (?,?,?,?,?,?)");
+        $stmt->bind_param("iissis", $_POST["id"], $response["questionId"], $_POST["username"], $response["answer"], $graderResult["grade"], $graderResult["comments"]);
+        $stmt->execute();
+        $stmt->close();
     }
 }
 
