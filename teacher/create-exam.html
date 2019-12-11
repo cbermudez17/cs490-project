@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <title>Create Exam</title>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li class="active"><a href="exams">exams</a></li>
+            <li><a href="question-bank">question bank</a></li>
+            <li><a href="#" onclick="logout()">logout</a></li>
+            <script>
+                function logout() {
+                    sessionStorage.clear();
+                    window.location.href = '../login';
+                }
+            </script>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div class="container col-6">
+            <div class="row">
+                <div class="col-3">
+                    <label for="e-name">Name</label>
+                </div>
+                <div class="col-9">
+                    <input type="text" class="form-control" placeholder="Name of the exam" id="e-name" />
+                </div>
+            </div>
+            <div class="row">
+                <label>Exam Questions</label>
+            </div>
+            <table class="col-12 shadow">
+                <thead class="text-center">
+                    <tr>
+                        <th>Name</th>
+                        <th>Topic</th>
+                        <th>Difficulty</th>
+                        <th>Description</th>
+                        <th>Constraint</th>
+                        <th>Points</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="exam-questions">
+                </tbody>
+            </table>
+            <div class="row">
+                <button type="button" class="primary-btn float-right" style="margin-top:10px" onclick="createExam()">Create Exam</button>
+            </div>
+        </div>
+
+        <div class="container col-6">
+            <h2 class="text-center" style="margin-top:0">Question Bank</h2>
+            <div class="row">
+                <label>Filters</label>
+            </div>
+            <div id="filters" class="row">
+                <div class="col-3">
+                    <input type="text" class="form-control" id="keyword-filter" placeholder="Keyword" onkeyup="filterQuestions()" />
+                </div>
+                <div class="col-3 col-offset-1">
+                    <select id="topic-filter" class="form-control" onchange="filterQuestions()">
+                        <option value="" selected>Select Topic</option>
+                        <option>Math</option>
+                        <option>Lists</option>
+                        <option>Turtle</option>
+                        <option>String</option>
+                        <option>Files</option>
+                        <option>Dictionaries</option>
+                    </select>
+                </div>
+                <div class="col-3 col-offset-1">
+                    <select id="difficulty-filter" class="form-control" onchange="filterQuestions()">
+                        <option value="" selected>Select Difficulty</option>
+                        <option>Easy</option>
+                        <option>Medium</option>
+                        <option>Hard</option>
+                    </select>
+                </div>
+            </div>
+
+            <br>
+            <table class="col-12 shadow">
+                <thead class="text-center">
+                    <tr>
+                        <th>Name</th>
+                        <th>Topic</th>
+                        <th>Difficulty</th>
+                        <th>Description</th>
+                        <th>Constraint</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="question-bank">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        if (!sessionStorage.username) {
+            window.location.href = 'login';
+        } else if (sessionStorage.role == 'student') {
+            window.location.href = 'student-home';
+        }
+        const proxyUrl = "https://web.njit.edu/~jdg37/cs490/frontback.php";
+        var questionBank = [];
+        var examQuestions = [];
+
+        // Fill questionBank with PHP call to getQuestions() via fetch API
+        function getQuestions() {
+            // Get questions from DB
+            var formData = new FormData();
+            formData.append("action", "getQuestions");
+            return fetch(proxyUrl, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Set question bank to the response
+                questionBank = data.questions;
+            });
+        }
+
+        function addQuestionToExam(id) {
+            var temp = [];
+            questionBank.forEach(question => {
+              if (question.id == id)
+                examQuestions.push(question);
+              else
+                temp.push(question);
+            });
+            questionBank = temp;
+
+            filterQuestions();
+            displayExamQuestionsInTable(examQuestions);
+        }
+
+        function removeQuestionFromExam(id) {
+            var temp = [];
+            examQuestions.forEach(question => {
+              if (question.id == id)
+                questionBank.push(question);
+              else
+                temp.push(question);
+            });
+            examQuestions = temp;
+
+            filterQuestions();
+            displayExamQuestionsInTable(examQuestions);
+        }
+
+        // Filters the displayed questions from the question bank
+        function filterQuestions() {
+            var difficulty = document.getElementById("difficulty-filter").value;
+            var topic = document.getElementById("topic-filter").value;
+            var keyword = document.getElementById("keyword-filter").value.trim().toLowerCase();
+
+            var filteredQuestions = questionBank.filter(question =>
+            (difficulty.length == 0 || question.difficulty == difficulty)
+            && (topic.length == 0 || question.topic == topic)
+            && (keyword.length == 0 || question.description.toLowerCase().includes(keyword)));
+            displayQuestionsInTable(filteredQuestions);
+        }
+
+        function displayQuestionsInTable(questions) {
+            var table = document.getElementById("question-bank");
+            table.innerHTML = '';
+            questions.forEach(question => {
+                var row = table.insertRow(-1);
+                row.insertCell(0).innerHTML = question.name;
+                row.insertCell(1).innerHTML = question.topic;
+                row.insertCell(2).innerHTML = question.difficulty;
+                row.insertCell(3).innerHTML = question.description;
+                row.insertCell(4).innerHTML = question.constraint;
+                row.insertCell(5).innerHTML = '<button onclick="addQuestionToExam('+question.id+')">Add</button>';
+            });
+        }
+
+        function displayExamQuestionsInTable(questions) {
+            var table = document.getElementById("exam-questions");
+            table.innerHTML = '';
+            questions.forEach(question => {
+                var row = table.insertRow(-1);
+                row.insertCell(0).innerHTML = question.name;
+                row.insertCell(1).innerHTML = question.topic;
+                row.insertCell(2).innerHTML = question.difficulty;
+                row.insertCell(3).innerHTML = question.description;
+                row.insertCell(4).innerHTML = question.constraint;
+                row.insertCell(5).innerHTML = '<input type="text" value="'+(question.hasOwnProperty('points') ? question.points : 0)+'" class="form-control" onchange="changePoints('+question.id+',this)" />';
+                row.insertCell(6).innerHTML = '<button onclick="removeQuestionFromExam('+question.id+')">Remove</button>';
+            });
+        }
+
+        function createExam() {
+            var exam = {};
+            exam.name = document.getElementById('e-name').value;
+            exam.questions = examQuestions.map(question => ({id: question.id, points: question.points}));
+
+            var formData = new FormData();
+            formData.append("exam", JSON.stringify(exam));
+            formData.append("action", "createExam");
+            fetch(proxyUrl, {
+                method: "POST",
+                body: formData
+            }).then(() => {window.location.href = 'exams'});
+        }
+
+        function changePoints(id, input) {
+          examQuestions = examQuestions.map(question => {
+            if (question.id == id)
+              question.points = input.value;
+            return question;
+          });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            getQuestions().then(() => displayQuestionsInTable(questionBank));
+        });
+    </script>
+    
+</body>
+</html>
